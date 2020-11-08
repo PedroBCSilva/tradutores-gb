@@ -1,7 +1,17 @@
 grammar Expr;
-INT : '0'..'9'+;
-sum: INT '+' INT NEWLINE;
-sub: INT '-' INT NEWLINE;
+
+DIGIT : '0'..'9'+;
 NEWLINE: '\r'? '\n';
+NUMBER: DIGIT+ ('.' DIGIT+)?;
+
+ARITHMETIC_OPERATORS: '+' | '-' | '*' | '/' |;
+ARITHMETIC_OPERATORATION : (NUMBER ARITHMETIC_OPERATORS ARITHMETIC_OPERATORS)(ARITHMETIC_OPERATORS NUMBER)*;
+
+RELATIONAL_OPERATORS: '=' | '<>' | '<' | '>' | '<=' | '>=';
+RELATIONAL_OPERATORATION: NUMBER RELATIONAL_OPERATORS NUMBER;
+
 prog: stat+;
-stat: sum {System.out.println("soma");} | sub;
+stat: ARITHMETIC_OPERATORATION |
+      RELATIONAL_OPERATORATION |
+      NUMBER
+      ;
