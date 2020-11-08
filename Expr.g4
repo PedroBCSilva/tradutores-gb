@@ -1,6 +1,7 @@
 grammar Expr;
 
 DIGIT : '0'..'9'+;
+TEXT : ('a'..'z' | 'A'..'Z')+;
 NEWLINE: '\r'? '\n';
 NUMBER: DIGIT+ ('.' DIGIT+)?;
 
@@ -13,5 +14,6 @@ RELATIONAL_OPERATORATION: NUMBER RELATIONAL_OPERATORS NUMBER;
 prog: stat+;
 stat: ARITHMETIC_OPERATORATION |
       RELATIONAL_OPERATORATION |
-      NUMBER
+      NUMBER |
+      TEXT
       ;
