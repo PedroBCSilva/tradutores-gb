@@ -1,4 +1,11 @@
 grammar Expr;
+options {
+    language=Java;
+}
+
+@members {
+    // declare java variables here
+}
 
 DIGIT : '0'..'9'+;
 TEXT : ('a'..'z' | 'A'..'Z')+;
