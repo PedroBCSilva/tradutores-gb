@@ -1,5 +1,7 @@
-shopt -s expand_aliases
-source ~/.bashrc
+# antlr setup
+export CLASSPATH=".:/usr/local/lib/antlr-4.8-complete.jar:$CLASSPATH"
+alias antlr4='java -jar /usr/local/lib/antlr-4.8-complete.jar'
+alias grun='java org.antlr.v4.gui.TestRig'
 
 FILE_NAME=$1
 INITIAL_RULE=$2
