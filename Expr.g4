@@ -4,11 +4,21 @@ options {
 	language=Java;
 }
 
+@header {
+import java.util.HashMap;
+}
+
 @members {
-    // declare java variables here
+    HashMap attributions = new HashMap();
 }
 
 arithmetic_op returns [ double v ]: (e = do_arithmetic_operation {$v = $e.v;} {System.out.println("Resultado: " + $v);}  NEWLINE*)+;
+
+attribution_operation: TEXT ATTRIBUTION_SYMBOL (e = arithmetic_op {
+                                                    attributions.put($TEXT.text, $e.v);
+                                                    System.out.println("MAP: " + attributions.get($TEXT.text));
+                                                  })
+    ;
 
 do_arithmetic_operation returns [ double v ]:
 	    NUMBER {$v = Double.parseDouble( $NUMBER.text);} (
@@ -21,13 +31,16 @@ do_arithmetic_operation returns [ double v ]:
 prog: stat+;
 stat: arithmetic_op |
       NUMBER |
-      TEXT
+      TEXT |
+      attribution_operation
       ;
 
 NUMBER: DIGIT+ ('.' DIGIT+)?;
 DIGIT: '0'..'9';
 TEXT : ('a'..'z' | 'A'..'Z')+;
 NEWLINE: '\r'? '\n';
+
+ATTRIBUTION_SYMBOL : ':=';
 
 SUM_OP: '+';
 SUB_OP: '-';
