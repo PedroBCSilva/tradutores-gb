@@ -17,7 +17,10 @@ arithmetic_op returns [ double v ]: (e = do_arithmetic_operation {$v = $e.v;} {S
 attribution_operation: TEXT ATTRIBUTION_SYMBOL (e = arithmetic_op {
                                                     attributions.put($TEXT.text, $e.v);
                                                     System.out.println("MAP: " + attributions.get($TEXT.text));
-                                                  })
+                                                  }) |
+                       TEXT ATTRIBUTION_SYMBOL TEXT {
+                            attributions.put($ctx.getStart().getText(), $TEXT.text);
+                            System.out.println("MAP: " + attributions.get($ctx.getStart().getText()));}
     ;
 
 do_arithmetic_operation returns [ double v ]:
