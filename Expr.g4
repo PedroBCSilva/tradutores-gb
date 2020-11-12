@@ -31,8 +31,20 @@ do_arithmetic_operation returns [ double v ]:
 	    '(' e = do_arithmetic_operation {$v = $e.v;} ')'
     ;
 
+relational_op returns [ boolean cond ] : (e = do_relational_operation {$cond = $e.cond;} {System.out.println("Resultado: " + $cond);} NEWLINE*)+ ;
+
+do_relational_operation returns [ boolean cond, double value ] :
+        NUMBER {$value = Double.parseDouble($NUMBER.text);} (
+            EQ e = do_arithmetic_operation {$cond = ($value == $e.v);} | DIF e = do_arithmetic_operation {$cond = ($value != $e.v);} |
+            SM e = do_arithmetic_operation {$cond = ($value < $e.v);}  | SMALLER_EQ e = do_arithmetic_operation {$cond = ($value <= $e.v);} |
+            BIG e = do_arithmetic_operation {$cond = ($value > $e.v);} | BIGGER_EQ e = do_arithmetic_operation {$cond = ($value >= $e.v);} |
+        ) |
+        NUMBER {$value = Double.parseDouble($NUMBER.text);}
+;
+
 prog: stat+;
 stat: arithmetic_op |
+      relational_op |
       NUMBER |
       TEXT |
       attribution_operation
@@ -50,5 +62,9 @@ SUB_OP: '-';
 MULT_OP: '*';
 DIV_OP: '/';
 
-RELATIONAL_OPERATORS: '=' | '<>' | '<' | '>' | '<=' | '>=';
-RELATIONAL_OPERATORATION: NUMBER RELATIONAL_OPERATORS NUMBER;
+EQ: '=';
+DIF: '<>';
+SM: '<';
+SMALLER_EQ: '<=';
+BIG: '>';
+BIGGER_EQ: '>=';
