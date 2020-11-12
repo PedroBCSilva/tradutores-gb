@@ -25,13 +25,16 @@ attribution_operation: TEXT ATTRIBUTION_SYMBOL (e = arithmetic_op {
 
 do_arithmetic_operation returns [ double v ]:
 	    NUMBER {$v = Double.parseDouble( $NUMBER.text);} (
-	        SUM_OP e = do_arithmetic_operation {$v += $e.v;} | SUB_OP e = do_arithmetic_operation {$v -= $e.v;} | MULT_OP e = do_arithmetic_operation {$v *= $e.v;} | DIV_OP e = do_arithmetic_operation {$v /= $e.v;}
+	        SUM_OP e = do_arithmetic_operation {$v += $e.v;} | 
+            SUB_OP e = do_arithmetic_operation {$v -= $e.v;} | 
+            MULT_OP e = do_arithmetic_operation {$v *= $e.v;} | 
+            DIV_OP e = do_arithmetic_operation {$v /= $e.v;}
 	    ) |
 	    NUMBER {$v = Double.parseDouble($NUMBER.text);} |
 	    '(' e = do_arithmetic_operation {$v = $e.v;} ')'
     ;
 
-relational_op returns [ boolean cond ] : (e = do_relational_operation {$cond = $e.cond;} {System.out.println("Resultado: " + $cond);} NEWLINE*)+ ;
+relational_op returns [ boolean cond ] : (e = do_relational_operation {$cond = $e.cond;} {System.out.println("Resultado: " + $cond);} SPACES*)+ ;
 
 do_relational_operation returns [ boolean cond, double value ] :
         NUMBER {$value = Double.parseDouble($NUMBER.text);} (
