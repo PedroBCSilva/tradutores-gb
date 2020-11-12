@@ -12,7 +12,7 @@ import java.util.HashMap;
     HashMap attributions = new HashMap();
 }
 
-arithmetic_op returns [ double v ]: (e = do_arithmetic_operation {$v = $e.v;} {System.out.println("Resultado: " + $v);}  NEWLINE*)+;
+arithmetic_op returns [ double v ]: (e = do_arithmetic_operation {$v = $e.v;} {System.out.println("Resultado: " + $v);}  SPACES*)+;
 
 attribution_operation: TEXT ATTRIBUTION_SYMBOL (e = arithmetic_op {
                                                     attributions.put($TEXT.text, $e.v);
@@ -31,17 +31,18 @@ do_arithmetic_operation returns [ double v ]:
 	    '(' e = do_arithmetic_operation {$v = $e.v;} ')'
     ;
 
-prog: stat+;
-stat: arithmetic_op |
-      NUMBER |
-      TEXT |
-      attribution_operation
-      ;
+program:    statement+;
+statement: (arithmetic_op |
+            NUMBER |
+            TEXT |
+            attribution_operation)
+            SEMICOLON;
 
 NUMBER: DIGIT+ ('.' DIGIT+)?;
 DIGIT: '0'..'9';
 TEXT : ('a'..'z' | 'A'..'Z')+;
-NEWLINE: '\r'? '\n';
+SEMICOLON: ';';
+SPACES: [ \u000B\t\r\n] -> channel(HIDDEN);
 
 ATTRIBUTION_SYMBOL : ':=';
 
