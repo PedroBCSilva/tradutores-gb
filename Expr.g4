@@ -5,11 +5,36 @@ options {
 }
 
 @header {
+package br.unisinos;
+
 import java.util.HashMap;
+import br.unisinos.*;
 }
 
-@members {
+@rulecatch {
+    // ANTLR does not generate its normal rule try/catch
+    catch(RecognitionException e) {
+        throw e;
+    }
+}
+
+@parser::members {
     HashMap attributions = new HashMap();
+//    @Override
+//    public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
+//        String hdr = getErrorHeader(e);
+//        String msg = getErrorMessage(e, tokenNames);
+//        throw new RuntimeException(hdr + ":" + msg);
+//    }
+}
+
+@lexer::members {
+//    @Override
+//    public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
+//        String hdr = getErrorHeader(e);
+//        String msg = getErrorMessage(e, tokenNames);
+//        throw new RuntimeException(hdr + ":" + msg);
+//    }
 }
 
 arithmetic_op returns [ double v ]: (e = do_arithmetic_operation {$v = $e.v;} {System.out.println("Resultado: " + $v);}  SPACES*)+;
@@ -48,9 +73,8 @@ do_relational_operation returns [ boolean cond, double value ] :
 program:      statement+;
 statement:    (arithmetic_op |
               relational_op |
-              NUMBER |
-              TEXT |
-              attribution_operation)
+              attribution_operation |
+              (NUMBER | TEXT))
               SEMICOLON;
 
 NUMBER: DIGIT+ ('.' DIGIT+)?;

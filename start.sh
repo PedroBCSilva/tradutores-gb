@@ -9,6 +9,6 @@ TEST_FILE=$3
 TEST_RIG_PARAM=$4
 
 antlr4 "${FILE_NAME}.g4" -o out
-find ./out -type f -name "*.java" | xargs javac
-cd out
+find ./out ./src -type f -name "*.java" | xargs javac -d ./out
+cd out/br/unisinos
 grun $FILE_NAME $INITIAL_RULE "../${TEST_FILE}" $TEST_RIG_PARAM
