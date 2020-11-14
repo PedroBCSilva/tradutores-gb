@@ -5,12 +5,21 @@ options {
 }
 
 @header {
+package br.unisinos.tradutores.generated;
 import java.util.HashMap;
 }
 
 @members {
     HashMap attributions = new HashMap();
 }
+
+program:      statement+;
+statement:    (arithmetic_op |
+              relational_op |
+              NUMBER |
+              TEXT |
+              attribution_operation)
+              SEMICOLON;
 
 arithmetic_op returns [ double v ]: (e = do_arithmetic_operation {$v = $e.v;} {System.out.println("Resultado: " + $v);}  SPACES*)+;
 
@@ -44,14 +53,6 @@ do_relational_operation returns [ boolean cond, double value ] :
         ) |
         NUMBER {$value = Double.parseDouble($NUMBER.text);}
 ;
-
-program:      statement+;
-statement:    (arithmetic_op |
-              relational_op |
-              NUMBER |
-              TEXT |
-              attribution_operation)
-              SEMICOLON;
 
 NUMBER: DIGIT+ ('.' DIGIT+)?;
 DIGIT: '0'..'9';

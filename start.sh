@@ -3,12 +3,10 @@ export CLASSPATH=".:/usr/local/lib/antlr-4.8-complete.jar:$CLASSPATH"
 alias antlr4='java -jar /usr/local/lib/antlr-4.8-complete.jar'
 alias grun='java org.antlr.v4.gui.TestRig'
 
-FILE_NAME=$1
-INITIAL_RULE=$2
-TEST_FILE=$3
-TEST_RIG_PARAM=$4
+TEST_FILE=$1
+TEST_RIG_PARAM=$2
 
-antlr4 "${FILE_NAME}.g4" -o out
-find ./out -type f -name "*.java" | xargs javac
-cd out
-grun $FILE_NAME $INITIAL_RULE "../${TEST_FILE}" $TEST_RIG_PARAM
+mvn generate-sources install
+find ./target/classes -type f -name "*.java" | xargs javac
+cd target/classes
+grun "br.unisinos.tradutores.generated.Expr" program "../../${TEST_FILE}" $TEST_RIG_PARAM
