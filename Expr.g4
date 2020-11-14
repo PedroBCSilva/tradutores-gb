@@ -46,7 +46,13 @@ do_relational_operation returns [ boolean cond, double value ] :
             SM e = do_arithmetic_operation {$cond = ($value < $e.v);}  | SMALLER_EQ e = do_arithmetic_operation {$cond = ($value <= $e.v);} |
             BIG e = do_arithmetic_operation {$cond = ($value > $e.v);} | BIGGER_EQ e = do_arithmetic_operation {$cond = ($value >= $e.v);} |
         ) |
-        NUMBER {$value = Double.parseDouble($NUMBER.text);}
+        TEXT {$value = ((Double) attributions.get($TEXT.text));} (
+            EQ e = do_arithmetic_operation {$cond = ($value == $e.v);} | DIF e = do_arithmetic_operation {$cond = ($value != $e.v);} |
+            SM e = do_arithmetic_operation {$cond = ($value < $e.v);}  | SMALLER_EQ e = do_arithmetic_operation {$cond = ($value <= $e.v);} |
+            BIG e = do_arithmetic_operation {$cond = ($value > $e.v);} | BIGGER_EQ e = do_arithmetic_operation {$cond = ($value >= $e.v);} |
+        ) |
+        NUMBER {$value = Double.parseDouble($NUMBER.text);} |
+        TEXT {$value = ((Double) attributions.get($TEXT.text));}
 ;
 
 program:      statement+;
