@@ -19,12 +19,12 @@ Or to run maven AND command line TestRig automatically:
 ```
 ./start.sh PATH_TO_TEST_FILE
 
-./start.sh src/test/resources/final_test.cc
+./start.sh src/test/resources/test.cc
 ```
 
 You can also use the `-gui` parameter to show the tree it created
 ```
-./start.sh src/test/resources/final_test.cc -gui
+./start.sh src/test/resources/test.cc -gui
 ```
 
 It's recommended to use `ANTLR v4 grammar plugin` on Intellij and import this file as project. It can render the tree created with the script if you click with mouse right click on the main rule of `g4` file, select the `Test Rule program`. This plugin can help development since all changes can be tested on Intellij with custom inputs.
