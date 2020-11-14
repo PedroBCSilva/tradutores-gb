@@ -26,21 +26,25 @@ arithmetic_op returns [ double v ]: (e = do_arithmetic_operation {$v = $e.v;} {S
 attribution_operation: TEXT ATTRIBUTION_SYMBOL (e = arithmetic_op {
                                                     attributions.put($TEXT.text, $e.v);
                                                     System.out.println("MAP: " + attributions.get($TEXT.text));
-                                                  }) |
-                       TEXT ATTRIBUTION_SYMBOL TEXT {
-                            attributions.put($ctx.getStart().getText(), $TEXT.text);
-                            System.out.println("MAP: " + attributions.get($ctx.getStart().getText()));}
+                                                  })
     ;
 
 do_arithmetic_operation returns [ double v ]:
-	    NUMBER {$v = Double.parseDouble( $NUMBER.text);} (
+	    NUMBER {$v = Double.parseDouble($NUMBER.text);} (
 	        SUM_OP e = do_arithmetic_operation {$v += $e.v;} | 
             SUB_OP e = do_arithmetic_operation {$v -= $e.v;} | 
             MULT_OP e = do_arithmetic_operation {$v *= $e.v;} | 
             DIV_OP e = do_arithmetic_operation {$v /= $e.v;}
 	    ) |
+	    TEXT {$v = ((Double) attributions.get($TEXT.text));} (
+        	        SUM_OP e = do_arithmetic_operation {$v += $e.v;} |
+                    SUB_OP e = do_arithmetic_operation {$v -= $e.v;} |
+                    MULT_OP e = do_arithmetic_operation {$v *= $e.v;} |
+                    DIV_OP e = do_arithmetic_operation {$v /= $e.v;}
+        	    ) |
 	    NUMBER {$v = Double.parseDouble($NUMBER.text);} |
-	    '(' e = do_arithmetic_operation {$v = $e.v;} ')'
+	    '(' e = do_arithmetic_operation {$v = $e.v;} ')' |
+	    TEXT {$v = ((Double) attributions.get($TEXT.text));}
     ;
 
 relational_op returns [ boolean cond ] : (e = do_relational_operation {$cond = $e.cond;} {System.out.println("Resultado: " + $cond);} SPACES*)+ ;
@@ -51,7 +55,13 @@ do_relational_operation returns [ boolean cond, double value ] :
             SM e = do_arithmetic_operation {$cond = ($value < $e.v);}  | SMALLER_EQ e = do_arithmetic_operation {$cond = ($value <= $e.v);} |
             BIG e = do_arithmetic_operation {$cond = ($value > $e.v);} | BIGGER_EQ e = do_arithmetic_operation {$cond = ($value >= $e.v);} |
         ) |
-        NUMBER {$value = Double.parseDouble($NUMBER.text);}
+        TEXT {$value = ((Double) attributions.get($TEXT.text));} (
+            EQ e = do_arithmetic_operation {$cond = ($value == $e.v);} | DIF e = do_arithmetic_operation {$cond = ($value != $e.v);} |
+            SM e = do_arithmetic_operation {$cond = ($value < $e.v);}  | SMALLER_EQ e = do_arithmetic_operation {$cond = ($value <= $e.v);} |
+            BIG e = do_arithmetic_operation {$cond = ($value > $e.v);} | BIGGER_EQ e = do_arithmetic_operation {$cond = ($value >= $e.v);} |
+        ) |
+        NUMBER {$value = Double.parseDouble($NUMBER.text);} |
+        TEXT {$value = ((Double) attributions.get($TEXT.text));}
 ;
 
 NUMBER: DIGIT+ ('.' DIGIT+)?;
