@@ -22,6 +22,7 @@ public class Test
 				throw new IllegalStateException("failed to parse at line " + line + " due to " + msg, e);
 			}
 		});
-		p.program();
+		ExprVisitor visitor = new ExprVisitor();
+		visitor.visit(p.program());
 	}
 }
