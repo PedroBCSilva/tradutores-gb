@@ -14,12 +14,15 @@ import java.util.HashMap;
 }
 
 program:      statement+;
-statement:    (arithmetic_op |
-              relational_op |
-              NUMBER |
-              TEXT |
-              attribution_operation)
-              SEMICOLON;
+statement:    (
+                (
+                    arithmetic_op |
+                    relational_op |
+                    NUMBER |
+                    attribution_operation |
+                    while_stat
+                )
+              SEMICOLON);
 
 arithmetic_op returns [ double v ]: (e = do_arithmetic_operation {$v = $e.v;} {System.out.println("Resultado: " + $v);}  SPACES*)+;
 
@@ -64,6 +67,11 @@ do_relational_operation returns [ boolean cond, double value ] :
         TEXT {$value = ((Double) attributions.get($TEXT.text));}
 ;
 
+while_stat: WHILE relational_op DO statement+ END;
+
+WHILE: 'while';
+DO: 'do';
+END: 'end';
 NUMBER: DIGIT+ ('.' DIGIT+)?;
 DIGIT: '0'..'9';
 TEXT : ('a'..'z' | 'A'..'Z')+;
