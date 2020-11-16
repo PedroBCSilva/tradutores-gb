@@ -103,4 +103,24 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
         }
         return Value.VOID;
     }
+
+    @Override
+    public Value visitIf_stat(ExprParser.If_statContext ctx) {
+        if(this.visit(ctx.relational_op()).asBoolean()){
+            for(ExprParser.StatementContext currentStatCtx : ctx.statement()){
+                this.visit(currentStatCtx);
+            }
+        } else {
+            this.visit(ctx.else_stat());
+        }
+        return Value.VOID;
+    }
+
+    @Override
+    public Value visitElse_stat(ExprParser.Else_statContext ctx) {
+        for(ExprParser.StatementContext currentStatCtx : ctx.statement()){
+            this.visit(currentStatCtx);
+        }
+        return Value.VOID;
+    }
 }
