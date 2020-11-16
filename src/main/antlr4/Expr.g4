@@ -37,31 +37,31 @@ do_arithmetic_operation returns [ double v ]:
             DIV_OP e = do_arithmetic_operation
 	    ) |
 	    TEXT (
-        	        SUM_OP e = do_arithmetic_operation |
-                    SUB_OP e = do_arithmetic_operation |
-                    MULT_OP e = do_arithmetic_operation |
-                    DIV_OP e = do_arithmetic_operation
-        	    ) |
+            SUM_OP e = do_arithmetic_operation |
+            SUB_OP e = do_arithmetic_operation |
+            MULT_OP e = do_arithmetic_operation |
+            DIV_OP e = do_arithmetic_operation
+        ) |
 	    NUMBER |
 	    '(' e = do_arithmetic_operation ')' |
 	    TEXT
     ;
 
-relational_op returns [ boolean cond ] : (e = do_relational_operation {$cond = $e.cond;} {System.out.println("Resultado: " + $cond);} SPACES*)+ ;
+relational_op returns [ boolean cond ] : (e = do_relational_operation SPACES*) ;
 
 do_relational_operation returns [ boolean cond, double value ] :
-        NUMBER {$value = Double.parseDouble($NUMBER.text);} (
-            EQ e = do_arithmetic_operation {$cond = ($value == $e.v);} | DIF e = do_arithmetic_operation {$cond = ($value != $e.v);} |
-            SM e = do_arithmetic_operation {$cond = ($value < $e.v);}  | SMALLER_EQ e = do_arithmetic_operation {$cond = ($value <= $e.v);} |
-            BIG e = do_arithmetic_operation {$cond = ($value > $e.v);} | BIGGER_EQ e = do_arithmetic_operation {$cond = ($value >= $e.v);} |
+        NUMBER (
+            EQ e = do_arithmetic_operation | DIF e = do_arithmetic_operation |
+            SM e = do_arithmetic_operation  | SMALLER_EQ e = do_arithmetic_operation |
+            BIG e = do_arithmetic_operation | BIGGER_EQ e = do_arithmetic_operation |
         ) |
-        TEXT {$value = ((Double) attributions.get($TEXT.text));} (
-            EQ e = do_arithmetic_operation {$cond = ($value == $e.v);} | DIF e = do_arithmetic_operation {$cond = ($value != $e.v);} |
-            SM e = do_arithmetic_operation {$cond = ($value < $e.v);}  | SMALLER_EQ e = do_arithmetic_operation {$cond = ($value <= $e.v);} |
-            BIG e = do_arithmetic_operation {$cond = ($value > $e.v);} | BIGGER_EQ e = do_arithmetic_operation {$cond = ($value >= $e.v);} |
+        TEXT (
+            EQ e = do_arithmetic_operation | DIF e = do_arithmetic_operation |
+            SM e = do_arithmetic_operation  | SMALLER_EQ e = do_arithmetic_operation |
+            BIG e = do_arithmetic_operation | BIGGER_EQ e = do_arithmetic_operation |
         ) |
-        NUMBER {$value = Double.parseDouble($NUMBER.text);} |
-        TEXT {$value = ((Double) attributions.get($TEXT.text));}
+        NUMBER |
+        TEXT
 ;
 
 while_stat: WHILE relational_op DO statement+ END;
