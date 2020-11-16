@@ -24,30 +24,27 @@ statement:    (
                 )
               SEMICOLON);
 
-arithmetic_op returns [ double v ]: (e = do_arithmetic_operation {$v = $e.v;} {System.out.println("Resultado: " + $v);}  SPACES*)+;
+arithmetic_op returns [ double v ]: (e = do_arithmetic_operation SPACES*);
 
-attribution_operation: TEXT ATTRIBUTION_SYMBOL (e = arithmetic_op {
-                                                    attributions.put($TEXT.text, $e.v);
-                                                    System.out.println("MAP: " + attributions.get($TEXT.text));
-                                                  })
+attribution_operation: TEXT ATTRIBUTION_SYMBOL (e = arithmetic_op)
     ;
 
 do_arithmetic_operation returns [ double v ]:
-	    NUMBER {$v = Double.parseDouble($NUMBER.text);} (
-	        SUM_OP e = do_arithmetic_operation {$v += $e.v;} | 
-            SUB_OP e = do_arithmetic_operation {$v -= $e.v;} | 
-            MULT_OP e = do_arithmetic_operation {$v *= $e.v;} | 
-            DIV_OP e = do_arithmetic_operation {$v /= $e.v;}
+	    NUMBER (
+	        SUM_OP e = do_arithmetic_operation |
+            SUB_OP e = do_arithmetic_operation |
+            MULT_OP e = do_arithmetic_operation |
+            DIV_OP e = do_arithmetic_operation
 	    ) |
-	    TEXT {$v = ((Double) attributions.get($TEXT.text));} (
-        	        SUM_OP e = do_arithmetic_operation {$v += $e.v;} |
-                    SUB_OP e = do_arithmetic_operation {$v -= $e.v;} |
-                    MULT_OP e = do_arithmetic_operation {$v *= $e.v;} |
-                    DIV_OP e = do_arithmetic_operation {$v /= $e.v;}
+	    TEXT (
+        	        SUM_OP e = do_arithmetic_operation |
+                    SUB_OP e = do_arithmetic_operation |
+                    MULT_OP e = do_arithmetic_operation |
+                    DIV_OP e = do_arithmetic_operation
         	    ) |
-	    NUMBER {$v = Double.parseDouble($NUMBER.text);} |
-	    '(' e = do_arithmetic_operation {$v = $e.v;} ')' |
-	    TEXT {$v = ((Double) attributions.get($TEXT.text));}
+	    NUMBER |
+	    '(' e = do_arithmetic_operation ')' |
+	    TEXT
     ;
 
 relational_op returns [ boolean cond ] : (e = do_relational_operation {$cond = $e.cond;} {System.out.println("Resultado: " + $cond);} SPACES*)+ ;
