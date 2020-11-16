@@ -111,7 +111,9 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
                 this.visit(currentStatCtx);
             }
         } else {
-            this.visit(ctx.else_stat());
+            if(!isNull(ctx.else_stat())) {
+                this.visit(ctx.else_stat());
+            }
         }
         return Value.VOID;
     }
