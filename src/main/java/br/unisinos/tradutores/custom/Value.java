@@ -15,11 +15,11 @@ public class Value {
     }
 
     public Boolean asBoolean() {
-        return (Boolean)value;
+        return Boolean.parseBoolean(value.toString());
     }
 
     public Double asDouble() {
-        return (Double)value;
+        return Double.parseDouble(value.toString());
     }
 
     public void setValue(Object value) {
