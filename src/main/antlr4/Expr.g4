@@ -16,13 +16,14 @@ import java.util.HashMap;
 program:      statement+;
 statement:    (
                 (
+                    while_stat |
+                    if_stat |
                     arithmetic_op |
                     relational_op |
                     NUMBER |
                     attribution_operation |
-                    while_stat
-                )
-              SEMICOLON);
+                )SEMICOLON
+              );
 
 arithmetic_op returns [ double v ]: (e = do_arithmetic_operation SPACES*);
 
@@ -60,12 +61,16 @@ do_relational_operation returns [ boolean cond, double value ] :
             SM e = do_arithmetic_operation  | SMALLER_EQ e = do_arithmetic_operation |
             BIG e = do_arithmetic_operation | BIGGER_EQ e = do_arithmetic_operation |
         ) |
-        NUMBER |
-        TEXT
+        NUMBER
 ;
 
 while_stat: WHILE relational_op DO statement+ END;
+if_stat: IF relational_op THEN statement+ END (SEMICOLON else_stat)?;
+else_stat: ELSE statement+ END;
 
+IF: 'if';
+THEN: 'then';
+ELSE: 'else';
 WHILE: 'while';
 DO: 'do';
 END: 'end';
