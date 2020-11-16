@@ -28,13 +28,13 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
     @Override
     public Value visitDo_arithmetic_operation(ExprParser.Do_arithmetic_operationContext ctx) {
         Value value = getValueForDoArithmeticOperation(ctx);
-        if(isNull(value)) { // this case solves cases ()
+        if (isNull(value)) { // this case solves cases ()
             return this.visit(ctx.e);
         }
         return doArithmeticOperation(ctx, value);
     }
 
-    private Value getValueForDoArithmeticOperation(ExprParser.Do_arithmetic_operationContext ctx){
+    private Value getValueForDoArithmeticOperation(ExprParser.Do_arithmetic_operationContext ctx) {
         if (!isNull(ctx.NUMBER()))
             return new Value(ctx.NUMBER().getSymbol().getText());
         else if (!isNull(ctx.TEXT()))
@@ -56,4 +56,41 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
         }
     }
 
+    @Override
+    public Value visitRelational_op(ExprParser.Relational_opContext ctx) {
+        return this.visit(ctx.do_relational_operation());
+    }
+
+    @Override
+    public Value visitDo_relational_operation(ExprParser.Do_relational_operationContext ctx) {
+        Value value = getValueForDoRelationalOperation(ctx);
+        Value result = doRelationalOperation(ctx, value);
+        System.out.println("result:" + result.asBoolean());
+        return result;
+    }
+
+    private Value getValueForDoRelationalOperation(ExprParser.Do_relational_operationContext ctx) {
+        if (!isNull(ctx.NUMBER()))
+            return new Value(ctx.NUMBER().getSymbol().getText());
+        else if (!isNull(ctx.TEXT()))
+            return memory.get(ctx.TEXT().getSymbol().getText());
+        return null;
+    }
+
+    private Value doRelationalOperation(ExprParser.Do_relational_operationContext ctx, Value value) {
+        if (!isNull(ctx.EQ())) {
+            return new Value(value.asDouble().equals(this.visit(ctx.e).asDouble()));
+        } else if (!isNull(ctx.DIF())) {
+            return new Value(!value.asDouble().equals(this.visit(ctx.e).asDouble()));
+        } else if (!isNull(ctx.SM())) {
+            return new Value(value.asDouble() < this.visit(ctx.e).asDouble());
+        } else if (!isNull(ctx.SMALLER_EQ())) {
+            return new Value(value.asDouble() <= this.visit(ctx.e).asDouble());
+        } else if (!isNull(ctx.BIG())) {
+            return new Value(value.asDouble() > this.visit(ctx.e).asDouble());
+        } else if (!isNull(ctx.BIGGER_EQ())) {
+            return new Value(value.asDouble() >= this.visit(ctx.e).asDouble());
+        }
+        return new Value(true);
+    }
 }
