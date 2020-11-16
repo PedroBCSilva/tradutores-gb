@@ -93,4 +93,14 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
         }
         return new Value(true);
     }
+
+    @Override
+    public Value visitWhile_stat(ExprParser.While_statContext ctx) {
+        while(this.visit(ctx.relational_op()).asBoolean()){
+            for(ExprParser.StatementContext currentStatCtx : ctx.statement()){
+                this.visit(currentStatCtx);
+            }
+        }
+        return Value.VOID;
+    }
 }
