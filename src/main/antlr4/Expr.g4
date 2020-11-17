@@ -44,7 +44,13 @@ do_arithmetic_operation returns [ double v ]:
             DIV_OP e = do_arithmetic_operation
         ) |
 	    NUMBER |
-	    '(' e = do_arithmetic_operation ')' |
+	    '(' do_arithmetic_operation ')' |
+	    '(' do_arithmetic_operation ')' (
+            SUM_OP e = do_arithmetic_operation |
+            SUB_OP e = do_arithmetic_operation |
+            MULT_OP e = do_arithmetic_operation |
+            DIV_OP e = do_arithmetic_operation
+         )|
 	    TEXT
     ;
 
@@ -65,7 +71,7 @@ do_relational_operation returns [ boolean cond, double value ] :
 ;
 
 while_stat: WHILE relational_op DO statement+ END;
-if_stat: IF relational_op THEN statement+ END (SEMICOLON else_stat)?;
+if_stat: IF relational_op THEN statement+ (END | (else_stat)?);
 else_stat: ELSE statement+ END;
 
 IF: 'if';

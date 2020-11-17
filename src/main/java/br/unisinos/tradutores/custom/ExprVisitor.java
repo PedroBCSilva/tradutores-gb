@@ -28,18 +28,18 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
     @Override
     public Value visitDo_arithmetic_operation(ExprParser.Do_arithmetic_operationContext ctx) {
         Value value = getValueForDoArithmeticOperation(ctx);
-        if (isNull(value)) { // this case solves cases ()
-            return this.visit(ctx.e);
-        }
         return doArithmeticOperation(ctx, value);
     }
 
     private Value getValueForDoArithmeticOperation(ExprParser.Do_arithmetic_operationContext ctx) {
+        Value value = null;
         if (!isNull(ctx.NUMBER()))
-            return new Value(ctx.NUMBER().getSymbol().getText());
+            value = new Value(ctx.NUMBER().getSymbol().getText());
         else if (!isNull(ctx.TEXT()))
-            return memory.get(ctx.TEXT().getSymbol().getText());
-        return null;
+            value = memory.get(ctx.TEXT().getSymbol().getText());
+        else
+            value = this.visit(ctx.do_arithmetic_operation().get(0));
+        return value;
     }
 
     private Value doArithmeticOperation(ExprParser.Do_arithmetic_operationContext ctx, Value value) {
