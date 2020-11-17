@@ -12,8 +12,7 @@ public class Test
 {
 	@org.junit.jupiter.api.Test
 	public void testProgramParser() throws Exception {
-		InputStream fileStream = Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("test.cc"));
-		CharStream input = CharStreams.fromStream(fileStream);
+		CharStream input = CharStreams.fromFileName("src/test/resources/final_test.cc");
 		ExprLexer l = new ExprLexer(input);
 		ExprParser p = new ExprParser(new CommonTokenStream(l));
 		p.addErrorListener(new BaseErrorListener() {
@@ -22,6 +21,7 @@ public class Test
 				throw new IllegalStateException("failed to parse at line " + line + " due to " + msg, e);
 			}
 		});
-		p.program();
+		ExprVisitor visitor = new ExprVisitor();
+		visitor.visit(p.program());
 	}
 }
