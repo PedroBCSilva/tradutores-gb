@@ -36,7 +36,7 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
         if (!isNull(ctx.NUMBER()))
             value = new Value(ctx.NUMBER().getSymbol().getText());
         else if (!isNull(ctx.TEXT()))
-            value = memory.get(ctx.TEXT().getSymbol().getText());
+            value = getMemoryVariable(ctx.TEXT().getSymbol().getText());
         else
             value = this.visit(ctx.do_arithmetic_operation().get(0));
         return value;
@@ -73,7 +73,7 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
         if (!isNull(ctx.NUMBER()))
             return new Value(ctx.NUMBER().getSymbol().getText());
         else if (!isNull(ctx.TEXT()))
-            return memory.get(ctx.TEXT().getSymbol().getText());
+            return getMemoryVariable(ctx.TEXT().getSymbol().getText());
         return null;
     }
 
@@ -124,5 +124,14 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
             this.visit(currentStatCtx);
         }
         return Value.VOID;
+    }
+
+    private Value getMemoryVariable(String variableName){
+        Value v = memory.get(variableName);
+        if(isNull(v)){
+            throw new RuntimeException("Variable not created: "+variableName);
+        } else {
+            return v;
+        }
     }
 }
