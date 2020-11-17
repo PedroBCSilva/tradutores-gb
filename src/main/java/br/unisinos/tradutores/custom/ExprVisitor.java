@@ -96,8 +96,8 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
 
     @Override
     public Value visitWhile_stat(ExprParser.While_statContext ctx) {
-        while(this.visit(ctx.relational_op()).asBoolean()){
-            for(ExprParser.StatementContext currentStatCtx : ctx.statement()){
+        while (this.visit(ctx.relational_op()).asBoolean()) {
+            for (ExprParser.StatementContext currentStatCtx : ctx.statement()) {
                 this.visit(currentStatCtx);
             }
         }
@@ -106,12 +106,12 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
 
     @Override
     public Value visitIf_stat(ExprParser.If_statContext ctx) {
-        if(this.visit(ctx.relational_op()).asBoolean()){
-            for(ExprParser.StatementContext currentStatCtx : ctx.statement()){
+        if (this.visit(ctx.relational_op()).asBoolean()) {
+            for (ExprParser.StatementContext currentStatCtx : ctx.statement()) {
                 this.visit(currentStatCtx);
             }
         } else {
-            if(!isNull(ctx.else_stat())) {
+            if (!isNull(ctx.else_stat())) {
                 this.visit(ctx.else_stat());
             }
         }
@@ -120,16 +120,16 @@ public class ExprVisitor extends ExprBaseVisitor<Value> {
 
     @Override
     public Value visitElse_stat(ExprParser.Else_statContext ctx) {
-        for(ExprParser.StatementContext currentStatCtx : ctx.statement()){
+        for (ExprParser.StatementContext currentStatCtx : ctx.statement()) {
             this.visit(currentStatCtx);
         }
         return Value.VOID;
     }
 
-    private Value getMemoryVariable(String variableName){
+    private Value getMemoryVariable(String variableName) {
         Value v = memory.get(variableName);
-        if(isNull(v)){
-            throw new RuntimeException("Variable not created: "+variableName);
+        if (isNull(v)) {
+            throw new RuntimeException("Variable not created: " + variableName);
         } else {
             return v;
         }
